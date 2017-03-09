@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>File Load</title>
+	<meta charset="utf-8" content="text/html" http-equiv="content-type">
+	<script src="http://code.jquery.com/jquery-1.4.3.js"></script>
+	<script type="text/javascript">
+		var i=0;
+		//添加文件到文本框
+		function setFile(){
+			var file=document.myform.myfile.value;
+			if (file!="") {
+				i++;
+				if (i>3) {
+					alert("最多同时上传三个文件");
+				}
+				else
+				{
+					if (i==1) 
+					{
+						document.myform.file1.value=file;
+					}
+					else
+					{
+						if (i==2) 
+						{
+							document.myform.file2.value=file;
+						}
+						else
+						{
+							document.myform.file3.value=file;
+						}
+					} 
+				}
+			}
+		}
+		//上传文件
+		$(function(){
+			$("#btn1").bind("click",function(){
+				//$.ajax({})
+			var pr=confirm("你真的要上传这些文件？");
+			if (true) {
+				alert("目前还不支持上传");
+			}
+			})
+			//获取文件
+			$("#btn2").bind("click",function(){
+				var $this = $(this);
+				$.ajax({
+				   url:'http://139.199.14.22:8080/ljMusic/listMusic/listAllMusic',
+				   type:"GET",
+				   async:false,
+				   dataType:"jsonp",
+				   jsonpCallback:"jsonpCallback_success",
+				   success:function tojson(data){
+				   	 $this.attr("disabled","true");
+				   	 var json = eval(data);
+				   	 alert(json.resultCode);
+				   	 //return json;
+				   //	 $("ul").append(json);
+				    }
+			    })
+			})
+			//下载文件
+				$("#btn3").click(function (){
+					//var elemIF = document.createElement("iframe");
+				   // elemIF.src = "http://139.99.14.22:8080/ljMusic/download/downloadMusic";
+				   // elemIF.style.difsplay = "none";
+				   // document.body.appendChild(elemIF);
+				   var downloadFile = function(options){
+				   var config = $.extend(true,"method:POST",options);
+				   var iframe = $("<iframe id=\"down-file-iframe\"/>");
+				   var $form = $("<form  target=\"down-file-iframe\" method=\""+config.method+"\"/>");
+				   $form.attr("action",config.url);
+				   for (var key in config.data){
+				   	if (config.data.hasOwnProperty(key)) {
+				   		$form.append("<input type=\"hidden\" name=\"' + key + '\" value=\"' +config.data[key]+'\"/>");
+				   	}
+				   }
+				   $iframe.append($form);
+				   $(document.body).append($iframe);
+				   $form[0].submit()
+				   $iframe.remove();
+				   }
+				   $.ajax({
+				   	    url:"http://139.199.14.22:8080/ljMusic/download/downloadMusic",
+				   	    dataType:"jsonp",
+				   	    data:{
+				   	    	musicname:"极乐净土"
+				   	    },
+				   	    method:"POST"
+				   });
+				})
+		})
+	</script>
+</head>
+<body>
+  <center>
+  	<h1>文件域展示</h1>
+  	<h2>请选择上传文件，最多只能同时上传三个文件</h2>
+  </center>
+  <form name="myform"enctype="multipart/form-data"method="POST">
+    <input type="File" name="myfile" size="30" onchange="setFile()">
+  	<br>
+  	<hr>
+  	已选择的文件：
+  	<br>
+  	<p>
+  	<input type="text" name="file1" size="40">
+  	</p>
+  	<p>
+  	<input type="text" name="file2" size="40">
+  	</p>
+  	<p>
+  	<input type="text" name="file3" size="40">
+  	</p>
+  	<input type="button" id="btn1" value="上传">
+    <p>
+  	从服务器获取文件：
+  	</p>
+  	<p>
+  		<input type="button" id="btn2" value="获取">
+  	</p>
+  	
+  <div>
+  	<ul></ul>
+  </div>
+  <p>
+  	从服务器上下载文件：
+  </p>
+  <p>
+  	    <input type="button" id="btn3" value="下载">
+  </p>
+  </form>
+</body>
+</html>
